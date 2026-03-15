@@ -1,6 +1,5 @@
-
 #!/bin/bash
-# nm-e.sh – NetworkManager Easy: A simplified, dialog‑based interface for nmcli`
+# enm.sh - interactive NetworkManager helper using nmcli + dialog
 
 VERSION="0.23"
 
@@ -16,6 +15,8 @@ trap 'rm -f "$TMPFILE"' EXIT
 # ---------------------------------------------------------
 # check root privileges - req. sudo password 
 # ---------------------------------------------------------
+
+
 if [ "$(id -u)" -ne 0 ]; then
     "$DIALOG" --backtitle "$APP_TITLE" --title "Authentication required" \
         --msgbox "This program requires root privileges.\nYou will now be prompted for your sudo password." \
@@ -32,6 +33,7 @@ fi
 # ---------------------------------------------------------
 # Utilities
 # ---------------------------------------------------------
+
 error_exit() {
     local msg="$1"
     echo "ERROR: $msg" >&2
@@ -101,16 +103,17 @@ get_device_ipv4() {
     local iface="$1"
     nmcli_run -g IP4.ADDRESS device show "$iface" 2>/dev/null | head -n1 || true
 }
-
 get_device_mtu() {
     local iface="$1"
     cat "/sys/class/net/$iface/mtu" 2>/dev/null || echo ""
 }
 
+
 get_interface_driver() {
     local iface="$1"
     ethtool -i "$iface" 2>/dev/null | awk '/^driver:/{print $2; exit}'
 }
+
 
 get_process_group_id() {
     local pid="$1"
@@ -214,6 +217,7 @@ is_valid_dns_list() {
 # ---------------------------------------------------------
 # Connection / interface helpers
 # ---------------------------------------------------------
+
 get_active_connection_for_iface() {
     local iface="$1"
     nmcli_run -t -f GENERAL.CONNECTION device show "$iface" 2>/dev/null | cut -d: -f2
@@ -318,6 +322,7 @@ delete_connections_bound_to_interface() {
 # ---------------------------------------------------------
 # Display functions
 # ---------------------------------------------------------
+
 show_interface_config() {
     local iface="$1"
     {
@@ -403,6 +408,7 @@ show_connection_file() {
 # ---------------------------------------------------------
 # Core actions
 # ---------------------------------------------------------
+
 toggle_ipv4_defaultgw() {
     local iface="$1"
     local conn current new msg
@@ -736,6 +742,8 @@ set_interface_mtu() {
     current_mtu=$(get_device_mtu "$iface")
     min_mtu="64"
     max_mtu="16000" 
+#    min_mtu=$(get_device_min_mtu "$iface")
+#    max_mtu=$(get_effective_max_mtu "$iface")
 
     while true; do
         if ! "$DIALOG" --backtitle "$APP_TITLE" --title "Set MTU" --inputbox \
