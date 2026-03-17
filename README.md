@@ -1,4 +1,4 @@
-# muxpi BETA! 
+# nm-e  BETA! 
 
 ## Install nm-e 
 ```
