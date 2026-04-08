@@ -1,6 +1,7 @@
-# nm-e  BETA! 
+# nm-e 
 
-## Install nm-e 
+
+## Installation / Update 
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ewaldj/nm-e/main/e-install.sh)"
 ```
